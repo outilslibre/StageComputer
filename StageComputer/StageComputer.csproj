@@ -23,7 +23,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\OpenCloseDays\OpenCloseDays\OpenCloseDays.csproj" />
+	  <ProjectReference Include="..\..\OpenCloseDays\OpenCloseDays\OpenCloseDays.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
