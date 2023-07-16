@@ -1,0 +1,34 @@
+﻿@page
+@model PrivacyModel
+@inject StageComputer.Utils.ExplainationManager explainationManager
+@{
+	ViewData["Title"] = "Mention légales";
+}
+<h1 class="mt-2 mb-2">@ViewData["Title"]</h1>
+
+<h2 class="mt-3">Politique de confidentialité</h2>
+
+@await explainationManager.GetExplainationHtmlAsync("privacy")
+
+<environment exclude="Development">
+	<p style="font-weight:bold">Désactiver le tracking Matomo</p>
+	<matomo-opt-out></matomo-opt-out>
+</environment>
+
+<h2 class="mb-3 mt-3">Crédits</h2>
+
+<p>Cet outil est un outil libre et gratuit réalisé en ASP.Net Core. Son code source est disponible sur <strong>GitHub <a href="https://github.com/outilslibre/StageComputer" target="_blank">https://github.com/outilslibre/StageComputer</a></strong></p>
+
+<p>Icône du site : <a href="https://www.flaticon.com/fr/icones-gratuites/stagiaire" title="stagiaire icônes">Stagiaire icônes créées par Uniconlabs - Flaticon</a></p>
+
+<p class="mb-0">Cet outil utilise les <em>paquets NuGet</em> suivants</p>
+<ul>
+	<li>Calcul de jours fériés (Portugal et Brésil) : <a href="https://github.com/reboucaslinhares/Holidays" target="_blank">Holidays</a></li>
+	<li>Calcul de jours fériés (autres pays) : <a href="https://github.com/martinjw/Holiday" target="_blank">PublicHoliday</a></li>
+	<li>Génération d'Excel : <a href="https://github.com/sveinungf/spreadcheetah" target="_blank">SpreadCheetah</a></li>
+	<li>Markdown : <a href="https://github.com/StackExchange/MarkdownSharp" target="_blank">MarkdownSharp</a></li>
+	<li>Validation de formulaire : <a href="https://github.com/StackExchange/MarkdownSharp" target="_blank">MarkdownSharp</a></li>
+	<li>PWA : <a href="https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker" target="_blank">WebEssentials.AspNetCore.ServiceWorker</a></li>
+	<li>Configuration des scripts Matomo : <a href="https://github.com/pericia/Pericia.AspNetCore.Matomo" target="_blank">Pericia.AspNetCore.Matomo</a></li>
+	<li>SEO : <a href="https://github.com/wintoncode/Winton.AspNetCore.Seo" target="_blank">Winton.AspNetCore.Seo</a></li>
+</ul>

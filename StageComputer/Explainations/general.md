@@ -1,0 +1,1 @@
+﻿Cet outil permet de calculer la durée du stage et le montant de la gratification pour les **stages de la formation initiale**.

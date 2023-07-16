@@ -1,0 +1,286 @@
+﻿@page "{handler?}"
+@using OpenCloseDays.Extensions
+@using StageComputer.Utils
+@inject StageComputer.Utils.ExplainationManager explainationManager
+@model StageComputerModel
+@{
+	ViewData["Title"] = "Simulateur de calcul de la durée et de la gratification de stage";
+
+	var payRate = Model.PayRate.ParseAsFloat();
+}
+
+<div class="text-center mb-5 mt-4">
+	<h1 class="display-5">@ViewData["Title"]</h1>
+</div>
+
+<div class="mb-4 mt-5">
+	@await explainationManager.GetExplainationHtmlAsync("general")
+	<details class="explaination">
+		<summary class="text-decoration-underline"><em>En savoir plus sur la gratification</em></summary>
+		@await explainationManager.GetExplainationHtmlAsync("general_details")
+	</details>
+</div>
+
+<form method="get">
+	@if (!ModelState.IsValid)
+	{
+		<div class="alert-danger" aria-label="Erreurs dans le formulaire">
+			<div asp-validation-summary="All"></div>
+		</div>
+	}
+
+	<div class="row">
+		<div class="form-floating col-md-4">
+			<input class="form-control resetpayrate" name="s" type="date" asp-for="StartDate" />
+			<label class="" asp-for="StartDate"></label>
+		</div>
+		<div class="form-floating col-md-4">
+			<input class="form-control resetpayrate" name="e" type="date" asp-for="EndDate" />
+			<label class="" asp-for="EndDate"></label>
+		</div>
+		<div class="form-floating col-md-4">
+			<select class="form-select resetpayrate" name="c" asp-for="Country" asp-items="Model.Countries"></select>
+			<label class="" asp-for="Country"></label>
+		</div>
+	</div>
+
+	<div class="border rounded mt-1">
+		<fieldset class="p-1" aria-labelledby="paysLegend">
+			<div class="row">
+				<legend class="col-md-2 fs-6" id="paysLegend">
+					Pays
+				</legend>
+				<div class="form-group col-md-10">
+					<div class="form-check form-check-inline">
+						<input id="radInFrance" class="form-check-input resetpayrate" type="radio"
+							   asp-for="StageCountry" name="stc" value="@StageLegislation.IN_FRANCE" />
+						<label for="radInFrance">Stage en France</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input id="radForeign" class="form-check-input resetpayrate" type="radio"
+							   asp-for="StageCountry" name="stc" value="@StageLegislation.OUTSIDE_FRANCE" />
+						<label for="radForeign">Stage à l’étranger</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<hr />
+		<fieldset class="p-1" aria-labelledby="organismLegend">
+			<div class="row">
+				<legend class="col-md-2 fs-6" id="organismLegend">
+					Organisme d’accueil
+				</legend>
+				<div class="form-group col-md-10">
+					<div class="form-check form-check-inline">
+						<input id="radPrivate" class="form-check-input resetpayrate" type="radio"
+							   asp-for="EnterpriseType" name="ent" value="@StageLegislation.ENTERPRISE_TYPE_PRIVATE" />
+						<label for="radPrivate">Organisme de droit privé</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input id="radPublic" class="form-check-input resetpayrate" type="radio"
+							   asp-for="EnterpriseType" name="ent" value="@StageLegislation.ENTERPRISE_TYPE_PUBLIC" />
+						<label for="radPublic">Organisme de droit public</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<hr />
+		<fieldset class="p-1" aria-labelledby="formationLegend">
+			<div class="row">
+				<legend class="col-md-2 fs-6" id="formationLegend">
+					Formation
+				</legend>
+				<div class="form-group col-md-10">
+					<div class="form-check form-check-inline">
+						<input id="radTTMedical" class="form-check-input resetpayrate" type="radio"
+							   asp-for="TrainingType" name="tt" value="@StageLegislation.TRAINING_MEDICAL" />
+						<label for="radTTMedical">Formation d’auxiliaire médical (infirmier, masseur-kinésithérapeute rééducateur, pédicure, orthophoniste, orthoptiste)</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input id="radTTOther" class="form-check-input resetpayrate" type="radio"
+							   asp-for="TrainingType" name="tt" value="@StageLegislation.TRAINING_OTHER" />
+						<label for="radTTOther">Autre formation</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="accordion mt-3" id="optionsAccordion">
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="weekdaysHeader">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#weekdaysCollapse" aria-expanded="false" aria-controls="weekdaysCollapse">
+					Heures de présence effective du stagiaire dans l’organisme d’accueil
+				</button>
+			</h2>
+			<div id="weekdaysCollapse" class="accordion-collapse collapse" aria-labelledby="weekdaysHeader" data-bs-parent="#optionsAccordion">
+				<div class="accordion-body container">
+					<div class="row">
+						<div class="explaination col-md-12 text-center">
+							Nombre d’heures de présence par jour du stagiaire dans l’organisme d’accueil
+						</div>
+					</div>
+					<div class="row justify-content-evenly row-smaller">
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="MondayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="monh" min="0" max="23" asp-for="MondayWorkHours" aria-label="Lundi - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="monm" min="0" max="59" asp-for="MondayWorkMinutes" aria-label="Lundi - Minutes de travail" />
+							</div>
+						</div>
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="TuesdayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="tueh" min="0" max="23" asp-for="TuesdayWorkHours" aria-label="Mardi - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="tuem" min="0" max="59" asp-for="TuesdayWorkMinutes" aria-label="Mardi - Minutes de travail" />
+							</div>
+						</div>
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="WednesdayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="wedh" min="0" max="23" asp-for="WednesdayWorkHours" aria-label="Mercredi - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="wedm" min="0" max="59" asp-for="WednesdayWorkMinutes" aria-label="Mercredi - Minutes de travail" />
+							</div>
+						</div>
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="ThursdayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="thuh" min="0" max="23" asp-for="ThursdayWorkHours" aria-label="Jeudi - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="thum" min="0" max="59" asp-for="ThursdayWorkMinutes" aria-label="Jeudi - Minutes de travail" />
+							</div>
+						</div>
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="FridayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="frih" min="0" max="23" asp-for="FridayWorkHours" aria-label="Vendredi - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="frim" min="0" max="59" asp-for="FridayWorkMinutes" aria-label="Vendredi - Minutes de travail" />
+							</div>
+						</div>
+					</div>
+					<div class="row justify-content-center row-smaller">
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="SaturdayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="sath" min="0" max="23" asp-for="SaturdayWorkHours" aria-label="Samedi - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="satm" min="0" max="59" asp-for="SaturdayWorkMinutes" aria-label="Samedi - Minutes de travail" />
+							</div>
+						</div>
+						<div class="form-group col-md-2 col-xs-6">
+							<label class="text-nowrap" asp-for="SundayWorkHours"></label>
+							<div class="input-group">
+								<input class="form-control workhours" name="sunh" min="0" max="23" asp-for="SundayWorkHours" aria-label="Dimanche - Heures de travail" />
+								<span class="input-group-text" id="basic-addon1">h</span>
+								<input class="form-control workminutes" name="sunm" min="0" max="59" asp-for="SundayWorkMinutes" aria-label="Dimanche - Minutes de travail" />
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<p><strong>Volume horaire hebdomadaire : <span id="hoursInfo"></span></strong></p>
+					</div>
+					<div class="row">
+						<div class="explaination col-md-12">
+							@await explainationManager.GetExplainationHtmlAsync("workhours")
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="excludedHeader">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#excludedCollapse" aria-expanded="false" aria-controls="excludedCollapse">
+					Indiquez ici vos jours d’absence et périodes d’interruption de stage (hors jours fériés)
+				</button>
+			</h2>
+			<div id="excludedCollapse" class="accordion-collapse collapse" aria-labelledby="excludedHeader" data-bs-parent="#optionsAccordion">
+				<div class="accordion-body container">
+					<div class="row">
+						<div class="explaination col-md-12">
+							@await explainationManager.GetExplainationHtmlAsync("excludeddays")
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label class="" for="ExcludedDatePicker">Sélectionner les jours où vous n’êtes pas en stage</label>
+							<input class="form-control" readonly="readonly" placeholder="Dates à exclure" type="text" autocomplete="off" id="ExcludedDatePicker" />
+							<input type="hidden" asp-for="ExcludedDates" name="excl" />
+						</div>
+						<div class="form-group col-md-6">
+							<label class="" asp-for="WorkPublicHolidays"></label>
+							<select class="form-select sl2" multiple="multiple" asp-for="WorkPublicHolidays" name="wph" asp-items="Model.HolidayNames"></select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="rateHeader">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#rateCollapse" aria-expanded="false" aria-controls="rateCollapse">
+					Montant de la gratification (<span id="payrateInfo"></span>€/h)
+				</button>
+			</h2>
+			<div id="rateCollapse" class="accordion-collapse collapse" aria-labelledby="rateHeader" data-bs-parent="#optionsAccordion">
+				<div class="accordion-body container">
+					<div class="row">
+						<div class="explaination col-md-12">
+							@await explainationManager.GetExplainationHtmlAsync("payrate")
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<label class="input-group-text" asp-for="PayRate"></label>
+								</div>
+								<input class="form-control" asp-for="PayRate" name="r" type="number" step="0.01" min="0" />
+								<span class="input-group-text">€/h</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row g-2 mt-3 text-center">
+		<div class="col">
+			<input class="btn btn-primary" type="submit" value="Calculer" />
+		</div>
+	</div>
+
+	<div class="row mt-3">
+		<div id="exportExcelExplain">
+			@await explainationManager.GetExplainationHtmlAsync("exportexcel")
+		</div>
+	</div>
+	<div class="row text-center">
+		<div class="col">
+			<input class="btn btn-secondary ml-2" style="display:inline-block;width:auto;vertical-align: baseline" type="submit" asp-page-handler="Excel" value="Export Excel" aria-labelledby="exportExcelExplain" />
+		</div>
+	</div>
+</form>
+
+@if (!ModelState.IsValid)
+{
+	<div class="alert-danger" style="margin-top: 1em" aria-label="Erreurs dans le formulaire">
+		<div asp-validation-summary="All"></div>
+	</div>
+}
+
+<section id="refresh-needed" style="display:none">
+	<p class="text-center mt-5 fw-bold alert-warning">Les informations du formulaire ont été changées. Merci de cliquer sur le bouton Calculer pour obtenir le résultat à jour.</p>
+</section>
+
+@if (StageLegislation.IsInAllowedHours(Model.Result?.TotalOpenHours ?? 0)){
+	await Html.RenderPartialAsync("_Result", Model);
+}
+
+@section Scripts{
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

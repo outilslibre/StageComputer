@@ -1,0 +1,68 @@
+﻿@using OpenCloseDays.Extensions
+@using StageComputer.Utils
+@inject StageComputer.Utils.ExplainationManager explainationManager
+@model StageComputerModel
+@{
+	var payRate = Model.PayRate.ParseAsFloat();
+}
+
+<section id="all-results">
+	<h2 class="mt-3">Résultat entre le @Model.Result.StartDate.ToLongDateString() et le @Model.Result.EndDate.ToLongDateString()</h2>
+
+	@if (Model.WorkPublicHolidays.Any())
+	{
+		<div class="mt-3"><strong>Jour(s) férié(s) travaillé(s) : </strong> @(string.Join(", ", Model.WorkPublicHolidays.Select(wh => $"{wh} ({Model.Result.PublicHolidayDays.FirstOrDefault(hh => hh.Name == wh).Date.ToShortDateString()}")))</div>
+	}
+	@if (Model.Result.ExcludedDateTimes.Any())
+	{
+		<div class="mt-3"><strong>Jour(s) exclu(s) : </strong> @(string.Join(", ", Model.Result.ExcludedDateTimes.Select(wh => wh.ToLongDateString())))</div>
+	}
+	<div class="mt-3"><strong>Durée totale du stage : </strong><strong>@Model.Result.TotalOpenHours.ToHoursMinutes()</strong> de présence effective dans l’organisme d’accueil à <strong>@(Model.Result.WorkHoursPerWeekDays.HoursPerWeek.ToHoursMinutes())</strong> par semaine</div>
+
+	@if (payRate > 0)
+	{
+		<div class="mt-3">
+			<p class="m-0"><strong>Détail par mois :</strong></p>
+			@foreach (var hoursPerMonth in Model.Result.MonthsWorkHours)
+			{
+				<p class="m-0">- <strong>@hoursPerMonth.MonthName</strong> @hoursPerMonth.Year : @(hoursPerMonth.WorkedHours.ToHoursMinutes())  à @(Model.PayRate)€/h = <strong>@((payRate * hoursPerMonth.WorkedHours).ToString("0.00"))</strong>€</p>
+			}
+		</div>
+	}
+
+	<div class="mt-3"><strong>Montant total de la gratification : </strong>@Model.Result.TotalOpenHours.ToHoursMinutes() à @(Model.PayRate)€/h = <strong>@((payRate * Model.Result.TotalOpenHours).ToString("0.00"))</strong>€</div>
+
+	@if (StageLegislation.IN_FRANCE == Model.StageCountry)
+	{
+		if (Model.LongStageStartDate.HasValue)
+		{
+			<div class="mt-3">Vous pouvez faire un stage sans gratification jusqu'au <strong>@(Model.LongStageStartDate.Value.ToString("dd/MM/yyyy"))</strong></div>
+		}
+		else
+		{
+			<div class="mt-3">Vous pouvez faire un stage sans gratification sur cette période</div>
+		}
+	}
+
+	@if (Model.Result.PublicHolidayDays.Any())
+	{
+		<dvi class="less-immportant">
+			<h3 class="mt-3 public-holidays-title">Jours fériés</h3>
+			<div class="mt-3 mb-3"><strong>@Model.Result.PublicHolidayDays.Count</strong> jour(s) fériés</div>
+			<ul class="border mt-2">
+				@foreach (var holiday in Model.Result.PublicHolidayDays)
+				{
+					<li>
+						@holiday.Date.ToLongDateString() (@holiday.Name) <em>
+							<strong>
+								@(
+									Model.WorkPublicHolidays.Contains(holiday.Name) ? "Travaillé" : ""
+									)
+							</strong>
+						</em>
+					</li>
+				}
+			</ul>
+		</dvi>
+	}
+</section>

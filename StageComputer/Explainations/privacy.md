@@ -1,0 +1,2 @@
+﻿Aucune donnée personnelle n'est collectée en dehors de données statistiques anonymisées d'utilisation de l'outil « *Simulateur de calcul de la durée et de la gratification de stage* ». 
+Ces données statistiques sont collectées via la plateforme d’analyse Web [Matomo](https://fr.matomo.org/).
