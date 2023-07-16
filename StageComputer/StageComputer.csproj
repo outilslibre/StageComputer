@@ -23,6 +23,10 @@
   </ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\OpenCloseDays\OpenCloseDays\OpenCloseDays.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="Explainations\excludeddays.md">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
