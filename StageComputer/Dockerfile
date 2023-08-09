@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["StageComputer/StageComputer.csproj", "StageComputer/"]
-COPY ["OpenCloseDays/OpenCloseDays.csproj", "OpenCloseDays/"]
+COPY ["OpenCloseDays/OpenCloseDays/OpenCloseDays.csproj", "OpenCloseDays/OpenCloseDays/"]
 RUN dotnet restore "StageComputer/StageComputer.csproj"
 COPY . .
 WORKDIR "/src/StageComputer"

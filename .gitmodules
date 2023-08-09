@@ -1,0 +1,3 @@
+[submodule "OpenCloseDays"]
+	path = OpenCloseDays
+	url = https://github.com/outilslibre/OpenCloseDays

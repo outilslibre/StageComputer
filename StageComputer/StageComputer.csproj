@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>c74a64f2-29a3-4cb0-932e-37a9777ee17b</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>c74a64f2-29a3-4cb0-932e-37a9777ee17b</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="11.3.0" />
@@ -17,36 +17,36 @@
 		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.7" />
 		<PackageReference Include="PublicHoliday" Version="2.20.0" />
 		<PackageReference Include="SpreadCheetah" Version="1.7.0" />
-    <PackageReference Include="Holidays" Version="1.0.1" />
-    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.65" />
-    <PackageReference Include="Winton.AspNetCore.Seo" Version="3.0.0" />
-  </ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\OpenCloseDays\OpenCloseDays\OpenCloseDays.csproj" />
+		<PackageReference Include="Holidays" Version="1.0.1" />
+		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.65" />
+		<PackageReference Include="Winton.AspNetCore.Seo" Version="3.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Explainations\excludeddays.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Explainations\exportexcel.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Explainations\general_details.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Explainations\general.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Explainations\payrate.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Explainations\privacy.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Explainations\workhours.md">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
+		<ProjectReference Include="..\OpenCloseDays\OpenCloseDays\OpenCloseDays.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Explainations\excludeddays.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Explainations\exportexcel.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Explainations\general_details.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Explainations\general.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Explainations\payrate.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Explainations\privacy.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Explainations\workhours.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 </Project>
